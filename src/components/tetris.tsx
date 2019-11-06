@@ -25,8 +25,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       // score: 0,
       // level: 1,
       // tileCount: 0,
-      // gameOver: false,
-      // isPaused: false,
+      gameOver: false,
+      isPaused: false,
       field: field,
       timerId: null,
       tiles: [
@@ -97,6 +97,10 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   }
 
   handleBoardUpdate(command: string) {
+    if (this.state.gameOver || this.state.isPaused) {
+      return
+    }
+
     // let xAdd = 0
     let yAdd = 0
     // let rotateAdd = 0
@@ -129,11 +133,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     let yAddIsValid = true
     if (yAdd !== 0) {
       for (let i = 0; i <= 3; i++) {
-        if (
+        if (//進行先がフィールドの中
           y + yAdd + tiles[tile][rotate][i][1] >= 0 &&
           y + yAdd + tiles[tile][rotate][i][1] < this.props.boardHeight
         ) {
-          if (
+          if (//進行先がブロックにぶつかる
             field[y + yAdd + tiles[tile][rotate][i][1]][x + tiles[tile][rotate][i][0]] !== 0
           ) {
             yAddIsValid = false
@@ -157,6 +161,22 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       x = parseInt(this.props.boardWidth) / 2
       y = 1
       rotate = 0
+
+      if ( //タイルが重なったら（天井）
+        field[y+tiles[tile][rotate][0][1]][x+tiles[tile][rotate][0][0]] !== 0 ||
+        field[y+tiles[tile][rotate][1][1]][x+tiles[tile][rotate][1][0]] !== 0 ||
+        field[y+tiles[tile][rotate][2][1]][x+tiles[tile][rotate][2][0]] !== 0 ||
+        field[y+tiles[tile][rotate][3][1]][x+tiles[tile][rotate][3][0]] !== 0 
+      ) {
+        this.setState({
+          gameOver: true
+        })
+      } else {
+        field[y+tiles[tile][rotate][0][1]][x+tiles[tile][rotate][0][0]] = tile
+        field[y+tiles[tile][rotate][1][1]][x+tiles[tile][rotate][1][0]] = tile
+        field[y+tiles[tile][rotate][2][1]][x+tiles[tile][rotate][2][0]] = tile
+        field[y+tiles[tile][rotate][3][1]][x+tiles[tile][rotate][3][0]] = tile 
+      }
     }
 
     this.setState({
@@ -168,12 +188,42 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     })
   }
 
+  handlePauseClick = () => {
+    this.setState(prev => ({
+      isPaused: !prev.isPaused
+    }))
+  }
+
+  handleNewGameClick = () => {
+    let field: any[] = []
+    for (let y = 0 ; y < this.props.boardHeight; y++) {
+      let row = []
+      for (let x = 0; x < this.props.boardWidth; x++) {
+        row.push(0)
+      }
+      field.push(row)
+    }
+    let xStart = Math.floor(parseInt(this.props.boardWidth) / 2)
+
+    this.setState({
+      activeTileX: xStart,
+      activeTileY: 1,
+      activeTile: 2,
+      tileRotate: 0,
+      // score: 0,
+      // level: 1,
+      // tileCount: 0,
+      gameOver: false,
+      field: field,
+    })
+  }  
+
   render() {
     return (
       <div className="tetris">
         <TetrisBoard 
           field={this.state.field}
-          // gameOver={this.state.gameOver}
+          gameOver={this.state.gameOver}
           // score={this.state.score}
           // level={this.state.level}
           rotate={this.state.tileRotate}
@@ -195,13 +245,13 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
         </div>
 
         <div className="tetris__game-controls">
-          {/* <button className="btn" onClick={this.handleNewGameClick}>
+          <button className="btn" onClick={this.handleNewGameClick}>
             New Game
           </button>
 
           <button className="btn" onClick={this.handlePauseClick}>
             {this.state.isPaused ? "Resume" : "Pause"}
-          </button> */}
+          </button>
         </div>      
       </div>
     )

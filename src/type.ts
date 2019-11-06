@@ -11,8 +11,8 @@ export type TetrisState = {
   // score: number,
   // level: number,
   // tileCount: number,
-  // gameOver: boolean,
-  // isPaused: boolean,
+  gameOver: boolean,
+  isPaused: boolean,
   field: any[],
   timerId: any,
   tiles: number[][][][]
@@ -20,7 +20,7 @@ export type TetrisState = {
 
 export type TetrisBoardProps = {
   field: any[],
-  // gameOver: boolean,
+  gameOver: boolean,
   // score: number,
   // level: number,
   rotate: number
