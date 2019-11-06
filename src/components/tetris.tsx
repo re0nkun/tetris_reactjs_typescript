@@ -133,11 +133,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
           y + yAdd + tiles[tile][rotate][i][1] >= 0 &&
           y + yAdd + tiles[tile][rotate][i][1] < this.props.boardHeight
         ) {
-          // if (
-          //   field[y + yAdd + tiles[tile][rotate][i][1]][x + tiles[tile][rotate][i][0]] !== 0
-          // ) {
-          //   yAddIsValid = false
-          // }
+          if (
+            field[y + yAdd + tiles[tile][rotate][i][1]][x + tiles[tile][rotate][i][0]] !== 0
+          ) {
+            yAddIsValid = false
+          }
         } else {
           yAddIsValid = false
         }
@@ -151,6 +151,13 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     field[y + tiles[tile][rotate][1][1]][x + tiles[tile][rotate][1][0]] = tile
     field[y + tiles[tile][rotate][2][1]][x + tiles[tile][rotate][2][0]] = tile
     field[y + tiles[tile][rotate][3][1]][x + tiles[tile][rotate][3][0]] = tile
+
+    if (!yAddIsValid) {
+      tile = Math.floor(Math.random() * 7 + 1)
+      x = parseInt(this.props.boardWidth) / 2
+      y = 1
+      rotate = 0
+    }
 
     this.setState({
       field: field,
