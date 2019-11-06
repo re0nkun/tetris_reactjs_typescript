@@ -127,11 +127,22 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     field[y + tiles[tile][rotate][3][1]][x + tiles[tile][rotate][3][0]] = 0
 
     let yAddIsValid = true
-
     if (yAdd !== 0) {
-
+      for (let i = 0; i <= 3; i++) {
+        if (
+          y + yAdd + tiles[tile][rotate][i][1] >= 0 &&
+          y + yAdd + tiles[tile][rotate][i][1] < this.props.boardHeight
+        ) {
+          // if (
+          //   field[y + yAdd + tiles[tile][rotate][i][1]][x + tiles[tile][rotate][i][0]] !== 0
+          // ) {
+          //   yAddIsValid = false
+          // }
+        } else {
+          yAddIsValid = false
+        }
+      }
     }
-
     if (yAddIsValid) {
       y += yAdd
     }
