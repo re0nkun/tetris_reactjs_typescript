@@ -103,7 +103,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     let xAdd = 0
     let yAdd = 0
-    // let rotateAdd = 0
+    let rotateAdd = 0
     let tile = this.state.activeTile
 
     if (command === 'left') {
@@ -112,9 +112,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     if (command === 'right') {
       xAdd = 1
     }
-    // if (command === 'rotate') {
-    //   rotateAdd = 1
-    // }
+    if (command === 'rotate') {
+      rotateAdd = 1
+    }
     if (command === 'down') {
       yAdd = 1
     }
@@ -152,14 +152,30 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       x += xAdd
     }
 
-    // let newRotate = rotate + rotateAdd > 3 ? 0 : rotate + rotateAdd
-    // let rotateIsValid = true
-    // if (rotateAdd !== 0) {
-
-    // }
-    // if (rotateIsValid) {
-
-    // }
+    //回転の判定
+    let newRotate = rotate + rotateAdd > 3 ? 0 : rotate + rotateAdd
+    let rotateIsValid = true
+    if (rotateAdd !== 0) {
+      for (let i = 0; i <= 3; i++) {
+        if ( //回転してもフィールド枠内
+          x + tiles[tile][newRotate][i][0] >= 0 &&
+          x + tiles[tile][newRotate][i][0] < this.props.boardWidth &&
+          y + tiles[tile][newRotate][i][1] >= 0 &&
+          y + tiles[tile][newRotate][i][1] < this.props.boardHeight
+        ) {
+          if (
+            field[y + tiles[tile][newRotate][i][1]][x + tiles[tile][newRotate][i][0]] !== 0
+          ) {
+            rotateIsValid = false
+          }
+        } else {
+          rotateIsValid = false
+        }
+      }
+    }
+    if (rotateIsValid) {
+      rotate = newRotate
+    }
 
     // 縦移動の判定
     let yAddIsValid = true
@@ -271,9 +287,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
           <button className="btn" onClick={()=>this.handleBoardUpdate("right")}>
             Right
           </button>
-          {/* <button className="btn" onClick={()=>this.handleBoardUpdate("rotate")}>
+          <button className="btn" onClick={()=>this.handleBoardUpdate("rotate")}>
             Rotate
-          </button> */}
+          </button>
         </div>
 
         <div className="tetris__game-controls">
