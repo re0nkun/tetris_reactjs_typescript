@@ -5,7 +5,9 @@ import './App.css'
 class App extends React.Component {
   public render() {
     return (
-      <Tetris boardWidth="14" boardHeight="20" />
+      <div>
+        <Tetris boardWidth="14" boardHeight="20" />
+      </div>
     )
   }
 }

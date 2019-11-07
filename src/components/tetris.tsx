@@ -22,9 +22,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       activeTileY: 1,
       activeTile: 1, // 0,1,2,3,4,5,6,7
       tileRotate: 0,
-      // score: 0,
-      // level: 1,
-      // tileCount: 0,
+      score: 0,
+      level: 1,
+      tileCount: 0,
       gameOver: false,
       isPaused: false,
       field: field,
@@ -86,7 +86,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     let timerId
     timerId = window.setInterval(
       () => this.handleBoardUpdate('down'),
-      1000
+      1000 - (this.state.level * 10 > 600 ? 600 : this.state.level * 10)
     )
 
     this.setState({ timerId })
@@ -125,6 +125,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     let rotate = this.state.tileRotate
     const tiles = this.state.tiles
 
+    // 進行元を消去
     field[y + tiles[tile][rotate][0][1]][x + tiles[tile][rotate][0][0]] = 0
     field[y + tiles[tile][rotate][1][1]][x + tiles[tile][rotate][1][0]] = 0
     field[y + tiles[tile][rotate][2][1]][x + tiles[tile][rotate][2][0]] = 0
@@ -199,11 +200,13 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       y += yAdd
     }
 
+    // 進行先を変更
     field[y + tiles[tile][rotate][0][1]][x + tiles[tile][rotate][0][0]] = tile
     field[y + tiles[tile][rotate][1][1]][x + tiles[tile][rotate][1][0]] = tile
     field[y + tiles[tile][rotate][2][1]][x + tiles[tile][rotate][2][0]] = tile
     field[y + tiles[tile][rotate][3][1]][x + tiles[tile][rotate][3][0]] = tile
 
+    // 進行先に進めなかった場合
     if (!yAddIsValid) {
       // 19~0
       for (let row = this.props.boardHeight - 1; row >= 0; row--) {
@@ -227,6 +230,21 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
           row = this.props.boardHeight
         }
       }
+
+      this.setState(prev => ({
+        score: prev.score + 1 * prev.level,
+        tileCount: prev.tileCount + 1,
+        level: 1 + Math.floor(prev.tileCount / 10)
+      }))
+
+      let timerId
+      clearInterval(this.state.timerId)
+      timerId = setInterval(
+        () => this.handleBoardUpdate('down'),
+        1000 - (this.state.level * 10 > 600 ? 600 : this.state.level * 10)
+      )
+      this.setState({ timerId })
+
 
       tile = Math.floor(Math.random() * 7 + 1)
       x = parseInt(this.props.boardWidth) / 2
@@ -281,9 +299,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       activeTileY: 1,
       activeTile: 2,
       tileRotate: 0,
-      // score: 0,
-      // level: 1,
-      // tileCount: 0,
+      score: 0,
+      level: 1,
+      tileCount: 0,
       gameOver: false,
       field: field,
     })
@@ -295,8 +313,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
         <TetrisBoard 
           field={this.state.field}
           gameOver={this.state.gameOver}
-          // score={this.state.score}
-          // level={this.state.level}
+          score={this.state.score}
+          level={this.state.level}
           rotate={this.state.tileRotate}
         />
 
