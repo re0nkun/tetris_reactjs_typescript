@@ -205,6 +205,29 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     field[y + tiles[tile][rotate][3][1]][x + tiles[tile][rotate][3][0]] = tile
 
     if (!yAddIsValid) {
+      // 19~0
+      for (let row = this.props.boardHeight - 1; row >= 0; row--) {
+        let isLineComplete = true
+        // 0~13
+        for (let col = 0; col < this.props.boardWidth; col++) {
+          if (field[row][col] === 0) {　// 横列が埋まってない
+            isLineComplete = false
+          }
+        }
+        // 横列が埋まってたら消す
+        if (isLineComplete) {
+          // 横列が埋まった所から上の横列
+          for (let yRowSrc = row; yRowSrc > 0; yRowSrc-- ) { 
+            for (let col = 0; col < this.props.boardWidth; col++) {
+              // 一つ上のマスで上書き
+              field[yRowSrc][col] = field[yRowSrc - 1 ][col]
+            }
+          }
+          // rowのループをリセット（boardHeightー1)から始まる
+          row = this.props.boardHeight
+        }
+      }
+
       tile = Math.floor(Math.random() * 7 + 1)
       x = parseInt(this.props.boardWidth) / 2
       y = 1
