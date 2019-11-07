@@ -101,17 +101,17 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       return
     }
 
-    // let xAdd = 0
+    let xAdd = 0
     let yAdd = 0
     // let rotateAdd = 0
     let tile = this.state.activeTile
 
-    // if (command === 'left') {
-    //   xAdd = -1
-    // }
-    // if (command === 'right') {
-    //   xAdd = 1
-    // }
+    if (command === 'left') {
+      xAdd = -1
+    }
+    if (command === 'right') {
+      xAdd = 1
+    }
     // if (command === 'rotate') {
     //   rotateAdd = 1
     // }
@@ -130,14 +130,46 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     field[y + tiles[tile][rotate][2][1]][x + tiles[tile][rotate][2][0]] = 0
     field[y + tiles[tile][rotate][3][1]][x + tiles[tile][rotate][3][0]] = 0
 
+    // 横移動の判定
+    let xAddIsValid = true
+    if (xAdd !== 0) {
+      for (let i = 0; i <= 3; i++) {
+        if (　//進行先が横枠内にある
+          x + xAdd + tiles[tile][rotate][i][0] >= 0 &&
+          x + xAdd + tiles[tile][rotate][i][0] < this.props.boardWidth
+        ) {
+          if ( //進行先でタイルが重なる
+            field[y + tiles[tile][rotate][i][1]][x + xAdd + tiles[tile][rotate][i][0]] !== 0
+          ) {
+            xAddIsValid = false
+          }
+        } else {
+          xAddIsValid = false
+        }
+      }
+    }
+    if (xAddIsValid) {
+      x += xAdd
+    }
+
+    // let newRotate = rotate + rotateAdd > 3 ? 0 : rotate + rotateAdd
+    // let rotateIsValid = true
+    // if (rotateAdd !== 0) {
+
+    // }
+    // if (rotateIsValid) {
+
+    // }
+
+    // 縦移動の判定
     let yAddIsValid = true
     if (yAdd !== 0) {
       for (let i = 0; i <= 3; i++) {
-        if (//進行先がフィールドの中
+        if (//進行先が縦枠内
           y + yAdd + tiles[tile][rotate][i][1] >= 0 &&
           y + yAdd + tiles[tile][rotate][i][1] < this.props.boardHeight
         ) {
-          if (//進行先がブロックにぶつかる
+          if (//進行先でタイルが重なる
             field[y + yAdd + tiles[tile][rotate][i][1]][x + tiles[tile][rotate][i][0]] !== 0
           ) {
             yAddIsValid = false
@@ -230,15 +262,15 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
         />
 
         <div className="tetris__block-controls">
-          {/* <button className="btn" onClick={()=>this.handleBoardUpdate("left")}>
+          <button className="btn" onClick={()=>this.handleBoardUpdate("left")}>
             Left
-          </button> */}
+          </button>
           <button className="btn" onClick={()=>this.handleBoardUpdate("down")}>
             Down
           </button>
-          {/* <button className="btn" onClick={()=>this.handleBoardUpdate("right")}>
+          <button className="btn" onClick={()=>this.handleBoardUpdate("right")}>
             Right
-          </button> */}
+          </button>
           {/* <button className="btn" onClick={()=>this.handleBoardUpdate("rotate")}>
             Rotate
           </button> */}
