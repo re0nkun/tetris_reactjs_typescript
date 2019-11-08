@@ -12,7 +12,7 @@ html {
 .tetris {
   padding: 8px;
   margin: 0 auto;
-  width: 500px;
+  width: 750px;
 }
 
 .tetris-board {
@@ -114,4 +114,11 @@ html {
 .tetris__game-controls .btn:last-child {
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
+}
+
+.tetris__board {
+  float: left;
+}
+.tetris__block-controls, .tetris__game-controls {
+  float: right
 }

@@ -83,6 +83,30 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   }
 
   componentDidMount() {
+    window.document.onkeydown = event => {
+      switch (event.key) {
+        case 'ArrowDown':
+            this.handleBoardUpdate('down')
+            break
+        case 'ArrowLeft':
+            this.handleBoardUpdate('left')
+            break
+        case 'ArrowRight':
+            this.handleBoardUpdate('right')
+            break
+        case 'ArrowUp':
+            this.handleBoardUpdate('rotate')
+            break
+        default:
+          console.log('?')
+      }
+    }
+    window.addEventListener("keydown", event => {
+      if (event.key === "Shift") {
+        this.handleBoardUpdate('rotate')
+      }
+    })
+
     let timerId
     timerId = window.setInterval(
       () => this.handleBoardUpdate('down'),
@@ -310,13 +334,15 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   render() {
     return (
       <div className="tetris">
-        <TetrisBoard 
-          field={this.state.field}
-          gameOver={this.state.gameOver}
-          score={this.state.score}
-          level={this.state.level}
-          rotate={this.state.tileRotate}
-        />
+        <div className="tetris__board">
+          <TetrisBoard 
+            field={this.state.field}
+            gameOver={this.state.gameOver}
+            score={this.state.score}
+            level={this.state.level}
+            rotate={this.state.tileRotate}
+          />
+        </div>
 
         <div className="tetris__block-controls">
           <button className="btn" onClick={()=>this.handleBoardUpdate("left")}>
